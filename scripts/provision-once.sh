@@ -71,12 +71,15 @@ echo -e "\n--- Installation Composer ---\n"
 curl -s https://getcomposer.org/installer | php >/dev/null 2>&1
 mv composer.phar /usr/local/bin/composer
 
-echo -e "\n--- Installation phpMyAdmin ---\n"
+
+pma_version_link="http://www.phpmyadmin.net/home_page/version.php"
+pma_latest_version=$(wget -q -O /tmp/phpMyAdmin_Update.html $pma_version_link && sed -ne '1p' /tmp/phpMyAdmin_Update.html);
+echo -e "\n--- Installation phpMyAdmin ($pma_latest_version)---\n"
 cd /tmp
-wget -q https://files.phpmyadmin.net/phpMyAdmin/4.5.2/phpMyAdmin-4.5.2-all-languages.tar.gz
-tar -xvzf phpMyAdmin-4.5.2-all-languages.tar.gz >/dev/null 2>&1
-cp phpMyAdmin-4.5.2-all-languages/* /var/www/phpmyadmin/ -R
-rm -R phpMyAdmin-4.5.2-all-languages
+wget -q https://files.phpmyadmin.net/phpMyAdmin/$pma_latest_version/phpMyAdmin-$pma_latest_version-all-languages.tar.gz
+tar -xvzf phpMyAdmin-$pma_latest_version-all-languages.tar.gz >/dev/null 2>&1
+cp phpMyAdmin-$pma_latest_version-all-languages/* /var/www/phpmyadmin/ -R
+rm -R phpMyAdmin-$pma_latest_version-all-languages
 cp /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.php
 
 echo -e "\n--- Installation de Mailhog ---\n"
