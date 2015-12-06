@@ -55,6 +55,11 @@ else
 	apt-get install -y php5 php-pear php5-cli php5-common php5-curl php5-dev php5-gd php5-mcrypt php5-mysql php5-pgsql php5-xdebug >/dev/null 2>&1
 fi
 
+echo "session.save_path = /var/lib/php/sessions" >> /etc/$php_dir/apache2/php.ini
+if [ ! -d "/var/lib/php/sessions" ]; then
+    mkdir /var/lib/php/sessions
+fi
+chmod 777 -R /var/lib/php/sessions
 
 echo -e "\n--- Installation Node.JS ---\n"
 apt-get install -y nodejs >/dev/null 2>&1

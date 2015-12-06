@@ -21,7 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.network "private_network", ip: "192.168.56.101"
   # config.vm.network "public_network"
 
-  config.vm.synced_folder WWW_DIRECTORY, "/var/www"
+  config.vm.synced_folder WWW_DIRECTORY, "/var/www", :mount_options => ['dmode=775', 'fmode=775']
 
   config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
