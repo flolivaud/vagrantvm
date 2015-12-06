@@ -43,6 +43,11 @@ apt-get install -y apache2 >/dev/null 2>&1
 echo "ServerName localhost" > /etc/apache2/httpd.conf
 a2enmod rewrite >/dev/null 2>&1
 
+echo -e "\n--- Installation MySQL ---\n"
+debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password rootpass'
+debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password_again password rootpass'
+apt-get -y install mysql-server >/dev/null 2>&1
+
 echo -e "\n--- Installation PHP ${PHP_VERSION} ---\n"
 if [[ $PHP_VERSION == "7" ]]; then
 	apt-get install -y php7.0 php7.0-cli php7.0-common php7.0-curl php7.0-dev php7.0-gd php7.0-mysql php7.0-pgsql >/dev/null 2>&1
@@ -60,6 +65,14 @@ apt-get install -y git >/dev/null 2>&1
 echo -e "\n--- Installation Composer ---\n"
 curl -s https://getcomposer.org/installer | php >/dev/null 2>&1
 mv composer.phar /usr/local/bin/composer
+
+echo -e "\n--- Installation phpMyAdmin ---\n"
+cd /tmp
+wget -q https://files.phpmyadmin.net/phpMyAdmin/4.5.2/phpMyAdmin-4.5.2-all-languages.tar.gz
+tar -xvzf phpMyAdmin-4.5.2-all-languages.tar.gz >/dev/null 2>&1
+cp phpMyAdmin-4.5.2-all-languages/* /var/www/phpmyadmin/ -R
+rm -R phpMyAdmin-4.5.2-all-languages
+cp /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.php
 
 echo -e "\n--- Installation de Mailhog ---\n"
 apt-get install -y mailhog >/dev/null 2>&1
