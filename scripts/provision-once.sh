@@ -71,6 +71,18 @@ echo -e "\n--- Installation Composer ---\n"
 curl -s https://getcomposer.org/installer | php >/dev/null 2>&1
 mv composer.phar /usr/local/bin/composer
 
+if [[ $PHP_VERSION == "7" ]]; then
+    echo -e "\n--- Installation XDebug ---\n"
+    cd /tmp
+	wget -q http://xdebug.org/files/xdebug-2.4.0rc2.tgz
+	tar -xzf xdebug-2.4.0rc2.tgz
+	cd xdebug-2.4.0/
+	./configure
+	make
+	cp modules/xdebug.so /usr/lib/php/20151012
+	echo "zend_extension = /usr/lib/php/20151012/xdebug.so" >> /etc/php/7.0/apache2/php.ini
+fi
+
 
 pma_version_link="http://www.phpmyadmin.net/home_page/version.php"
 pma_latest_version=$(wget -q -O /tmp/phpMyAdmin_Update.html $pma_version_link && sed -ne '1p' /tmp/phpMyAdmin_Update.html);
