@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo -e "\n--- Ajout des vhosts Apache 2 ---\n"
+echo -e "\n=== Provision: Apache2 Vhosts ===\n"
 DIR="/vagrant/scripts/vhosts"
 FILES_LIST=$(find $DIR -type f -name "*.conf") 
 PHP_VERSION=$1

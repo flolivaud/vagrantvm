@@ -16,10 +16,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #config.vm.box = "ubuntu/precise64"
   # config.vm.box_check_update = false
   config.vm.network "forwarded_port", guest: 80, host: 80
-  config.vm.network "forwarded_port", guest: 8025, host: 8025
+  config.vm.network "forwarded_port", guest: 1080, host: 1080
 
   # config.vm.network "private_network", ip: "192.168.56.101"
-config.vm.network "public_network"
+  # config.vm.network "public_network"
 
   config.vm.synced_folder WWW_DIRECTORY, "/var/www", :mount_options => ['dmode=775', 'fmode=775']
 
