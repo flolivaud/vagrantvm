@@ -19,7 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 8025, host: 8025
 
   # config.vm.network "private_network", ip: "192.168.56.101"
-  # config.vm.network "public_network"
+config.vm.network "public_network"
 
   config.vm.synced_folder WWW_DIRECTORY, "/var/www", :mount_options => ['dmode=775', 'fmode=775']
 
@@ -40,4 +40,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision :shell, path: "#{SCRIPTS_DIRECTORY}/provision-once.sh", args: "#{PHP_VERSION}"
   config.vm.provision :shell, path: "#{SCRIPTS_DIRECTORY}/provision-always.sh", args: "#{PHP_VERSION}"
+  config.vm.provision "shell", path: "#{SCRIPTS_DIRECTORY}/startup-always.sh", run: "always"
 end

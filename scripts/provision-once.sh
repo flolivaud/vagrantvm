@@ -31,9 +31,8 @@ fi
 # Node.JS
 add-apt-repository -y ppa:chris-lea/node.js >/dev/null 2>&1
 
-# Mailhog
-echo "deb http://repo.deogracia.xyz/debian precise contrib" >> /etc/apt/sources.list.d/mailhog-debian-package.list
-wget -q -O - http://l.deogracia.xyz/2 | sudo apt-key add - >/dev/null 2>&1
+# Ruby
+apt-add-repository -y ppa:brightbox/ruby-ng >/dev/null 2>&1
 
 echo -e "\n--- Mise a jour des depots ---\n"
 apt-get update >/dev/null 2>&1
@@ -55,11 +54,21 @@ else
 	apt-get install -y php5 php-pear php5-cli php5-common php5-curl php5-dev php5-gd php5-mcrypt php5-mysql php5-pgsql php5-xdebug >/dev/null 2>&1
 fi
 
-echo "session.save_path = /var/lib/php/sessions" >> /etc/$php_dir/apache2/php.ini
-if [ ! -d "/var/lib/php/sessions" ]; then
+if [[ $PHP_VERSION == "7" ]]; then
+	echo "session.save_path = /var/lib/php/sessions" >> /etc/$php_dir/apache2/php.ini
     mkdir /var/lib/php/sessions
+	chmod 777 -R /var/lib/php/sessions
 fi
-chmod 777 -R /var/lib/php/sessions
+
+DISPLAY_ERRORS="On"
+MEMORY_LIMIT="1024M"
+MAX_EXECUTION_TIME="600"
+sed -i "s/display_errors = .*/display_errors = ${DISPLAY_ERRORS}/" /etc/$php_dir/apache2/php.ini
+sed -i "s/memory_limit = .*/memory_limit = ${MEMORY_LIMIT}/" /etc/$php_dir/apache2/php.ini
+sed -i "s/max_execution_time = .*/max_execution_time = ${MAX_EXECUTION_TIME}/" /etc/$php_dir/apache2/php.ini
+
+echo -e "\n--- Installation Ruby 1.9.3\n"
+apt-get install -y ruby1.9.3 >/dev/null 2>&1
 
 echo -e "\n--- Installation Node.JS ---\n"
 apt-get install -y nodejs >/dev/null 2>&1
@@ -83,23 +92,29 @@ if [[ $PHP_VERSION == "7" ]]; then
 	echo "zend_extension = /usr/lib/php/20151012/xdebug.so" >> /etc/php/7.0/apache2/php.ini
 fi
 
+if [[ ! -d "/var/www/phpmyadmin" ]]; then
+	pma_version_link="http://www.phpmyadmin.net/home_page/version.php"
+	pma_latest_version=$(wget -q -O /tmp/phpMyAdmin_Update.html $pma_version_link && sed -ne '1p' /tmp/phpMyAdmin_Update.html);
+	echo -e "\n--- Installation phpMyAdmin ($pma_latest_version)---\n"
+	cd /tmp
+	wget -q https://files.phpmyadmin.net/phpMyAdmin/$pma_latest_version/phpMyAdmin-$pma_latest_version-all-languages.tar.gz --no-check-certificate
+	tar -xzf phpMyAdmin-$pma_latest_version-all-languages.tar.gz >/dev/null 2>&1
+	cp phpMyAdmin-$pma_latest_version-all-languages/* /var/www/phpmyadmin/ -R
+	rm -R phpMyAdmin-$pma_latest_version-all-languages
+	cp /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.php
+fi
 
-pma_version_link="http://www.phpmyadmin.net/home_page/version.php"
-pma_latest_version=$(wget -q -O /tmp/phpMyAdmin_Update.html $pma_version_link && sed -ne '1p' /tmp/phpMyAdmin_Update.html);
-echo -e "\n--- Installation phpMyAdmin ($pma_latest_version)---\n"
-cd /tmp
-wget -q https://files.phpmyadmin.net/phpMyAdmin/$pma_latest_version/phpMyAdmin-$pma_latest_version-all-languages.tar.gz
-tar -xvzf phpMyAdmin-$pma_latest_version-all-languages.tar.gz >/dev/null 2>&1
-cp phpMyAdmin-$pma_latest_version-all-languages/* /var/www/phpmyadmin/ -R
-rm -R phpMyAdmin-$pma_latest_version-all-languages
-cp /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.php
+echo -e "\n--- Installation de Mailcatcher ---\n"
+apt-get install -y libsqlite3-dev >/dev/null 2>&1
+gem install mailcatcher >/dev/null 2>&1
 
-echo -e "\n--- Installation de Mailhog ---\n"
-apt-get install -y mailhog >/dev/null 2>&1
-service mailhog stop
-cd /usr/sbin/
-wget -q https://github.com/mailhog/MailHog/releases/download/v0.1.8/MailHog_linux_amd64 >/dev/null 2>&1
-mv MailHog_linux_amd64 mailhog
-chmod +x mailhog
-service mailhog start
-echo "sendmail_path = /usr/sbin/mailhog sendmail test@local.dev" >> /etc/$php_dir/apache2/php.ini
+echo -e "\n >> Configuration Mailcatcher\n"
+echo "sendmail_path = /usr/bin/env $(which catchmail) -f test@local.dev" >> /etc/$php_dir/apache2/php.ini
+echo "@reboot $(which mailcatcher) --ip=0.0.0.0" >> /etc/crontab
+update-rc.d cron defaults >/dev/null 2>&1
+/usr/bin/env $(which mailcatcher) --ip=0.0.0.0 >/dev/null 2>&1
+
+if [[ -e "/vagrant/scripts/custom.sh" ]]; then
+    chmod +x /vagrant/scripts/custom.sh
+    . /vagrant/scripts/custom.sh
+fi

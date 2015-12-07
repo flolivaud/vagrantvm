@@ -16,7 +16,7 @@ for file in $FILES_LIST; do
 	re="([a-zA-Z\_\-]+)*\.conf" 
 	if [[ $file =~ $re  ]]; then 
 
-		echo -e "\n>> Ajout du vhost ${BASH_REMATCH[1]}"
+		echo -e "\n >> Ajout du vhost ${BASH_REMATCH[1]}"
 		cp $file /etc/apache2/$folder_site/${BASH_REMATCH[1]}.conf
 
 		if [[ $PHP_VERSION != "5.4" ]]; then
@@ -26,6 +26,3 @@ for file in $FILES_LIST; do
 done
 
 service apache2 restart >/dev/null 2>&1
-
-#cd /usr/local/share
-#~/mailhog > /dev/null 2>&1 &
