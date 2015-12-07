@@ -76,7 +76,7 @@ if [[ $PHP_VERSION == "7" ]]; then
     cd /tmp
 	wget -q http://xdebug.org/files/xdebug-2.4.0rc2.tgz
 	tar -xzf xdebug-2.4.0rc2.tgz
-	cd xdebug-2.4.0/
+	cd xdebug-2.4.0RC2/
 	./configure
 	make
 	cp modules/xdebug.so /usr/lib/php/20151012
