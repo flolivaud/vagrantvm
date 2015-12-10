@@ -9,3 +9,7 @@ Ajouter au fichier host de windows (C:\Windows\System32\drivers\etc\hosts) les l
 #127.0.0.1	local.dev
 #127.0.0.1	www.local.dev
 #127.0.0.1	db.local.dev
+
+Login acces PHPMyAdmin: root
+
+Password: rootpass
