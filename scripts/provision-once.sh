@@ -82,9 +82,13 @@ fi
 DISPLAY_ERRORS="On"
 MEMORY_LIMIT="1024M"
 MAX_EXECUTION_TIME="600"
+POST_MAX_SIZE="32M"
+UPLOAD_MAX_FILESIZE="32M"
 sed -i "s/display_errors = .*/display_errors = ${DISPLAY_ERRORS}/" /etc/$php_dir/apache2/php.ini
 sed -i "s/memory_limit = .*/memory_limit = ${MEMORY_LIMIT}/" /etc/$php_dir/apache2/php.ini
 sed -i "s/max_execution_time = .*/max_execution_time = ${MAX_EXECUTION_TIME}/" /etc/$php_dir/apache2/php.ini
+sed -i "s/post_max_size = .*/post_max_size = ${POST_MAX_SIZE}/" /etc/$php_dir/apache2/php.ini
+sed -i "s/upload_max_filesize = .*/upload_max_filesize = ${UPLOAD_MAX_FILESIZE}/" /etc/$php_dir/apache2/php.ini
 
 # ---------------------------------------
 #          Ruby Setup
@@ -127,6 +131,7 @@ if [[ ! -d "/var/www/phpmyadmin" ]]; then
 	pma_latest_version=$(wget -q -O /tmp/phpMyAdmin_Update.html $pma_version_link && sed -ne '1p' /tmp/phpMyAdmin_Update.html);
 	echo -e "\n >> phpMyAdmin ($pma_latest_version)\n"
 	cd /tmp
+	mkdir /var/www/phpmyadmin
 	wget -q https://files.phpmyadmin.net/phpMyAdmin/$pma_latest_version/phpMyAdmin-$pma_latest_version-all-languages.tar.gz --no-check-certificate
 	tar -xzf phpMyAdmin-$pma_latest_version-all-languages.tar.gz >/dev/null 2>&1
 	cp phpMyAdmin-$pma_latest_version-all-languages/* /var/www/phpmyadmin/ -R

@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-PHP_VERSION = "7" #5.4, 5.5, 5.6 or 7
+PHP_VERSION = "5.6" #5.4, 5.5, 5.6 or 7
 WWW_DIRECTORY = "D:/www"
 
 VAGRANTFILE_API_VERSION = "2"
@@ -17,13 +17,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.box_check_update = false
   config.vm.network "forwarded_port", guest: 80, host: 80
   config.vm.network "forwarded_port", guest: 1080, host: 1080
-
+  config.vm.hostname = "local"
   # config.vm.network "private_network", ip: "192.168.56.101"
   # config.vm.network "public_network"
 
-  config.vm.synced_folder WWW_DIRECTORY, "/var/www",
-    group: "www-data",
-    mount_options: ["dmode=775,fmode=664"]
+  config.vm.synced_folder WWW_DIRECTORY, "/var/www", group: "www-data", mount_options: ["dmode=775,fmode=664"]
 
   config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
