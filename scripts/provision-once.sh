@@ -41,6 +41,10 @@ apt-add-repository -y ppa:brightbox/ruby-ng >/dev/null 2>&1
 echo -e "\n >> Mise a jour des depots\n"
 apt-get update >/dev/null 2>&1
 
+echo -e "\n--- TimeZone Europe/Paris ---\n"
+echo "Europe/Paris" | sudo tee /etc/timezone
+dpkg-reconfigure --frontend noninteractive tzdata
+
 # ---------------------------------------
 #          Apache Setup
 # ---------------------------------------
@@ -143,7 +147,14 @@ fi
 echo -e "\n >> MailCatcher\n"
 apt-get install -y libsqlite3-dev >/dev/null 2>&1
 gem install mailcatcher >/dev/null 2>&1
+
+echo -e "\n >> Configuration Mailcatcher\n"
 echo "sendmail_path = /usr/bin/env $(which catchmail) -f test@local.dev" >> /etc/$php_dir/apache2/php.ini
+echo "sendmail_path = /usr/bin/env $(which catchmail) -f test@local.dev" >> /etc/$php_dir/cli/php.ini
+/usr/bin/env $(which mailcatcher) --ip=0.0.0.0 >/dev/null 2>&1
+
+echo -e "\n--- Installation NPMs ---\n"
+npm install -g bower gulp cordova phonegap ionic >/dev/null 2>&1
 
 if [[ -e "/vagrant/scripts/custom.sh" ]]; then
     chmod +x /vagrant/scripts/custom.sh
