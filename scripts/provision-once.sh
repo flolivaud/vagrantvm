@@ -119,9 +119,9 @@ mv composer.phar /usr/local/bin/composer
 if [[ $PHP_VERSION == "7" ]]; then
     echo -e "\n >> XDebug\n"
     cd /tmp
-	wget -q http://xdebug.org/files/xdebug-2.4.0rc2.tgz
-	tar -xzf xdebug-2.4.0rc2.tgz
-	cd xdebug-2.4.0RC2/
+	wget -q https://xdebug.org/files/xdebug-2.4.0.tgz
+	tar -xzf xdebug-2.4.0.tgz
+	cd xdebug-2.4.0/
 	phpize >/dev/null 2>&1
 	./configure >/dev/null 2>&1
 	make >/dev/null 2>&1
