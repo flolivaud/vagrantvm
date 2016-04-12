@@ -130,18 +130,11 @@ if [[ $PHP_VERSION == "7" ]]; then
 fi
 
 # --- phpMyAdmin ---
-if [[ ! -d "/var/www/phpmyadmin" ]]; then
-	pma_version_link="http://www.phpmyadmin.net/home_page/version.php"
-	pma_latest_version=$(wget -q -O /tmp/phpMyAdmin_Update.html $pma_version_link && sed -ne '1p' /tmp/phpMyAdmin_Update.html);
-	echo -e "\n >> phpMyAdmin ($pma_latest_version)\n"
-	cd /tmp
-	mkdir /var/www/phpmyadmin
-	wget -q https://files.phpmyadmin.net/phpMyAdmin/$pma_latest_version/phpMyAdmin-$pma_latest_version-all-languages.tar.gz --no-check-certificate
-	tar -xzf phpMyAdmin-$pma_latest_version-all-languages.tar.gz >/dev/null 2>&1
-	cp phpMyAdmin-$pma_latest_version-all-languages/* /var/www/phpmyadmin/ -R
-	rm -R phpMyAdmin-$pma_latest_version-all-languages
-	cp /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.php
-fi
+echo -e "\n--- Installation phpMyAdmin ---\n"
+apt-get install -y phpmyadmin >/dev/null 2>&1
+echo -e "\n >> Alias /phpmyadmin/ \n"
+echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
+service apache2 reload
 
 # --- MailCatcher ---
 echo -e "\n >> MailCatcher\n"
