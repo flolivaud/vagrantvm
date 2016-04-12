@@ -98,9 +98,8 @@ sed -i "s/upload_max_filesize = .*/upload_max_filesize = ${UPLOAD_MAX_FILESIZE}/
 #          Ruby Setup
 # ---------------------------------------
 
-echo -e "\n--- Installation Ruby 2.2\n"
+echo -e "\n--- Installation Ruby 2.2 ---\n"
 apt-get install -y ruby2.2 >/dev/null 2>&1
-apt-get install -y ruby2.2-dev >/dev/null 2>&1
 
 # ---------------------------------------
 #          Utilities Setup
